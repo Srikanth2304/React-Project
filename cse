@@ -431,3 +431,14 @@ export default TradeTable
 
 
 
+.page-gradient {
+    background: linear-gradient(to bottom right, #00ccff, #00ff00);
+    min-height: 100vh;
+}
+
+.table-header {
+    background-color: rgba(0, 204, 255, 0.7);  /* semi-transparent light blue */
+    color: white;
+}
+
+/* You can add more colorful styles below */
