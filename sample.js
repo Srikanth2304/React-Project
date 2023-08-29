@@ -74,3 +74,5 @@ export default Navbar;
   rel="stylesheet"
   href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
 />
+
+      <nav class="navbar navbar-expand-lg" style={{background: "linear-gradient(to right, #003366, #66ccff)"}}>
