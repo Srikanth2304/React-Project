@@ -76,3 +76,7 @@ export default Navbar;
 />
 
       <nav class="navbar navbar-expand-lg" style={{background: "linear-gradient(to right, #003366, #66ccff)"}}>
+
+.light-blue-gradient {
+    background: linear-gradient(to right, rgb(51, 153, 255), rgb(0, 102, 204));
+}
