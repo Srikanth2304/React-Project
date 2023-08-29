@@ -63,3 +63,7 @@ function Navbar() {
 }
 
 export default Navbar;
+
+.navbar.bg-body-tertiary {
+    background: linear-gradient(to right, #007BFF, #00C6FF);
+}
