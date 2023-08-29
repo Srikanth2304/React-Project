@@ -428,3 +428,6 @@ function TradeTable() {
 }
 
 export default TradeTable
+
+
+<i class="bi bi-arrow-return-left"></i>
