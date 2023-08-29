@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import './style/Main.css';
 // font awesome
@@ -67,3 +68,9 @@ export default Navbar;
 .navbar.bg-body-tertiary {
     background: linear-gradient(to right, #007BFF, #00C6FF);
 }
+
+
+<link
+  rel="stylesheet"
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+/>
