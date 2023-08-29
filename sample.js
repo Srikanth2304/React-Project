@@ -1,330 +1,430 @@
-import React, { useState } from 'react';
-import './style/Main.css';
+import React, { useState, useEffect } from 'react'
+import TradeDataJson from './Trade_Data.json'
+import styles from './style/Table.css'
+import './style/Pagination.css'
+import { useHistory } from "react-router-dom";
+import ViewPDF from './ViewPDF';
+import GeneratePDF from './GeneratePDF'
+import ViewTrade from './ViewTrade';
+import MakersCheck from './MakersCheck';
+import CheckersCheck from './CheckersCheck';
 // font awesome
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Link,NavLink } from 'react-router-dom/cjs/react-router-dom.min'
-import 'bootstrap/dist/css/bootstrap.min.css'
 
-function Navbar() {
-    return <div>
-        <nav class="navbar navbar-expand-lg " style={{background: "linear-gradient(to right, #0099CC, #006699)"}}>
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Standard_Chartered_%282021%29.svg/2560px-Standard_Chartered_%282021%29.svg.png"
-                        alt="Stan Chartered logo" width="110px" height="45px" />
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <NavLink className="nav-link active" exact to="/">Home</NavLink>
+
+function TradeTable() {
+    // list containing all trade info
+    const [tradeData, setTradeData] = useState([]);
+    // set trade data from imported json file
+    useEffect(() => {
+        setTradeData(TradeDataJson)
+    }, []);
+
+
+    /*
+    *
+    *
+    *         Trade table related functions 
+    * 
+    * 
+    */
+
+    // trade object to be passed in selected button component's props
+    const [currentTradeObject, setCurrentTradeObject] = useState({});
+
+
+    // variable to show or hide GeneratePDF component
+    const [isGeneratePDF, setIsGeneratePDF] = useState(false);
+    function toggleGeneratePDF() {
+        setIsGeneratePDF(!isGeneratePDF);
+    }
+
+    // variable to show or hide ViewPDF component
+    const [isViewPDF, setIsViewPDF] = useState(false);
+    function toggleViewPDF() {
+        setIsViewPDF(!isViewPDF);
+    }
+
+    // variable to show or hide ViewTrade component
+    const [isViewTrade, setIsViewTrade] = useState(false);
+    function toggleViewTrade() {
+        setIsViewTrade(!isViewTrade);
+    }
+
+    // variable to show or hide MakersCheck component
+    const [isMakersCheck, setIsMakersCheck] = useState(false);
+    function toggleMakersCheck() {
+        setIsMakersCheck(!isMakersCheck);
+    }
+
+    // variable to show or hide CheckersCheck component
+    const [isCheckersCheck, setIsCheckersCheck] = useState(false);
+    function toggleCheckersCheck() {
+        setIsCheckersCheck(!isCheckersCheck);
+    }
+
+    // functions to executed after respective button click  
+    function handleGeneratePDF(trade) {
+        // set currentTradeObject state to this buttons trade
+        setCurrentTradeObject(trade);
+        // set isGeneratePDF variable to true which will show popup 
+        setIsGeneratePDF(true);
+    }
+    function handleViewPDF(trade) {
+        setCurrentTradeObject(trade);
+        setIsViewPDF(true);
+    }
+    function handleViewTrade(trade) {
+        setCurrentTradeObject(trade);
+        setIsViewTrade(true);
+    }
+    function handleMakersCheck(trade) {
+        setCurrentTradeObject(trade);
+        setIsMakersCheck(true);
+    }
+    function handleCheckersCheck(trade) {
+        setCurrentTradeObject(trade);
+        setIsCheckersCheck(true);
+    }
+    function handleRow(trade) {
+        if (trade.Status == 'New XML') {
+            handleGeneratePDF(trade);
+        }
+        else if (trade.Status == 'Outbound Sent') {
+            handleViewPDF(trade);
+        }
+        else if (trade.Status == 'Inbound Received') {
+            handleMakersCheck(trade);
+        }
+        else if (trade.Status == 'Makers Confirmed') {
+            handleCheckersCheck(trade);
+        }
+        else if (trade.Status == 'Checkers confirmed') {
+            handleViewTrade(trade);
+        }
+        else if (trade.Status == 'Rejected') {
+            handleViewTrade(trade);
+        }
+    }
+
+    // jsx script for rendering table based in tradeData values
+    // seperately created this jsx in renderData variable for better readability
+    const renderData = (tradeData) => {
+        return (
+            <div>
+                <table className="table table-striped table-hover table-container">
+                    <thead className={styles['table-header']}>
+                        <tr>
+                            <th>Trade ID <span onClick={() => { handleSort("id") }}><FontAwesomeIcon icon="fa-solid fa-sort" size="xs" /></span></th>
+                            <th>Party 1 <span onClick={() => { handleSort("party1") }}><FontAwesomeIcon icon="fa-solid fa-sort" size="xs" /></span></th>
+                            <th>Party 2 <span onClick={() => { handleSort("party2") }}><FontAwesomeIcon icon="fa-solid fa-sort" size="xs" /></span></th>
+                            {/* <th>Product</th> */}
+                            {/* <th>Counterparty <span onClick={() => { handleSort("counterparty") }}><FontAwesomeIcon icon="fa-solid fa-sort" size="xs" /></span></th> */}
+                            <th>Currency 1 <span onClick={() => { handleSort("ExchangedCurrency1") }}><FontAwesomeIcon icon="fa-solid fa-sort" size="xs" /></span></th>
+                            <th>Currency 2 <span onClick={() => { handleSort("ExchangedCurrency1") }}><FontAwesomeIcon icon="fa-solid fa-sort" size="xs" /></span></th>
+                            <th>Amount <span onClick={() => { handleSort("Amount") }}><FontAwesomeIcon icon="fa-solid fa-sort" size="xs" /></span></th>
+                            <th>Date <span onClick={() => { handleSort("Date") }}><FontAwesomeIcon icon="fa-solid fa-sort" size="xs" /></span></th>
+                            <th>Status <span onClick={() => { handleSort("Status") }}><FontAwesomeIcon icon="fa-solid fa-sort" size="xs" /></span></th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tradeData && tradeData.map(trade => (
+                            <tr >
+                                <th scope='row' onClick={() => { handleRow(trade) }}>
+                                    {trade.id}
+                                </th>
+                                <td onClick={() => { handleRow(trade) }}>
+                                    {trade.party1}
+                                </td>
+                                <td onClick={() => { handleRow(trade) }}>
+                                    {trade.party2}
+                                </td>
+                                {/* <td>{trade.product}</td> */}
+                                {/* <td>
+                                    <a onClick={() => { handleRow(trade) }}>
+                                        {trade.counterparty}
+                                    </a>
+                                </td> */}
+                                <td onClick={() => { handleRow(trade) }}>
+                                    {trade.ExchangedCurrency1}
+                                </td>
+                                <td onClick={() => { handleRow(trade) }}>
+                                    {trade.ExchangedCurrency2}
+                                </td>
+                                <td onClick={() => { handleRow(trade) }}>
+                                    {trade.Amount}
+                                </td>
+                                <td onClick={() => { handleRow(trade) }}>
+                                    {trade.Date}
+                                </td>
+                                <td onClick={() => { handleRow(trade) }}>
+                                    {trade.Status}
+                                </td>
+                                <td>
+                                    <button className='btn btn-primary' style={{ width: '120px' }} onClick={() => { handleViewTrade(trade) }}>Trade View</button>
+                                    <button className='btn btn-primary' style={{ width: '120px',marginLeft:'10px' }} onClick={() => { handleViewTrade(trade) }}>Trade Audit</button>
+                                    {/* {trade.Status == 'New XML' ? <button className='btn btn-primary' style={{ width: '160px' }} onClick={() => { handleGeneratePDF(trade) }}>Generate PDF</button> : null}
+                                    {trade.Status == 'Outbound Sent' ? <button className='btn btn-primary' style={{ width: '160px' }} onClick={() => { handleViewPDF(trade) }}>View PDF</button> : null}
+                                    {trade.Status == 'Inbound Received' ? <button className='btn btn-primary' style={{ width: '160px' }} onClick={() => { handleMakersCheck(trade) }}>Makers Check</button> : null}
+                                    {trade.Status == 'Makers Confirmed' ? <button className='btn btn-primary' style={{ width: '160px' }} onClick={() => { handleCheckersCheck(trade) }}>Checkers Check</button> : null}
+                                    {trade.Status == 'Checkers confirmed' ? <button className='btn btn-primary' style={{ width: '160px' }} onClick={() => { handleViewTrade(trade) }}>View Trade</button> : null}
+                                    {trade.Status == 'Rejected' ? <button className='btn btn-primary' style={{ width: '160px' }} onClick={() => { handleViewTrade(trade) }}>View Trade</button> : null} */}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+
+            </div>
+        );
+    };
+
+    /*
+    *
+    *
+    *         Pagination related functions 
+    * 
+    * 
+    */
+    // pagination section
+    const [currentPage, setcurrentPage] = useState(1);
+    const [itemsPerPage, setitemsPerPage] = useState(6);
+    const [pageNumberLimit, setpageNumberLimit] = useState(4);
+    const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(5);
+    const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
+    const pages = [];
+    for (let i = 1; i <= Math.ceil(tradeData.length / itemsPerPage); i++) {
+        pages.push(i);
+    }
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = tradeData.slice(indexOfFirstItem, indexOfLastItem);
+
+    const handleClick = (event) => {
+        setcurrentPage(Number(event.target.id));
+    };
+    const renderPageNumbers = pages.map((number) => {
+        if (number < maxPageNumberLimit + 1 && number > minPageNumberLimit) {
+            return (
+                <li
+                    key={number}
+                    id={number}
+                    onClick={handleClick}
+                    className={currentPage == number ? "active" : null}
+                >
+                    {number}
+                </li>
+            );
+        } else {
+            return null;
+        }
+    });
+
+    const handleNextbtn = () => {
+        setcurrentPage(currentPage + 1);
+
+        if (currentPage + 1 > maxPageNumberLimit) {
+            setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
+            setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
+        }
+    };
+
+    const handlePrevbtn = () => {
+        setcurrentPage(currentPage - 1);
+
+        if ((currentPage - 1) % pageNumberLimit == 0) {
+            setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
+            setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
+        }
+    };
+
+    let pageIncrementBtn = null;
+    if (pages.length > maxPageNumberLimit) {
+        pageIncrementBtn = <li onClick={handleNextbtn}> &hellip; </li>;
+    }
+
+    let pageDecrementBtn = null;
+    if (minPageNumberLimit >= 1) {
+        pageDecrementBtn = <li onClick={handlePrevbtn}> &hellip; </li>;
+    }
+    // pagination end
+
+
+    /*
+    *
+    *
+    *         Table Search related functions 
+    * 
+    * 
+    */
+    const [searchColumn, setSearchColumn] = useState('id');
+    const [searchColumnData, setSearchColumnData] = useState('');
+
+    // activated whenever searchColumn selection changed 
+    // eg change from TradeID to Status in filter search section
+    useEffect(() => {
+        setSearchColumnData('');
+        setTradeData(TradeDataJson)
+    }, [searchColumn]);
+    const onSearchColumnChange = (e) => {
+        setSearchColumn(e.target.value)
+    }
+
+    // activated whenever searchColumn selection changed 
+    // eg change from TradeID to Status in filter search section
+    useEffect(() => {
+        if (searchColumnData != '') {
+            setTradeData(TradeDataJson.filter(tradeobj => {
+                const content = tradeobj[searchColumn].toString();
+                if (content.startsWith(searchColumnData)) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }));
+        }
+        else {
+            setTradeData(TradeDataJson);
+        }
+
+    }, [searchColumnData]);
+    const onSearchColumnDataChange = (e) => {
+        setSearchColumnData(e.target.value)
+    }
+
+
+    /*
+    *
+    *
+    *         Table sort related functions 
+    * 
+    * 
+    */
+    const [sortColumn, setSortColumn] = useState('id');
+    const [sortColumnAlignment, setSortColumnAlignment] = useState(0); // 1 for ascending, -1 desc, 0 for no sort
+
+    function handleSort(colName) {
+        if (colName == sortColumn) {
+            if (sortColumnAlignment == 1) {
+                setSortColumnAlignment(-1);
+            }
+            else if (sortColumnAlignment == -1) {
+                setSortColumnAlignment(0);
+            }
+            else {
+                setSortColumnAlignment(1);
+            }
+        }
+        else {
+            setSortColumn(colName);
+        }
+        console.log(colName)
+        console.log(sortColumnAlignment)
+    }
+    useEffect(() => {
+        if (sortColumnAlignment == 0) {
+            setTradeData(TradeDataJson);
+        }
+        else if (sortColumnAlignment == 1) {
+            let sortedTradeDataJson = [...TradeDataJson].sort(
+                (p1, p2) => (p1[sortColumn] < p2[sortColumn]) ? 1 : (p1[sortColumn] > p2[sortColumn]) ? -1 : 0);
+            setTradeData(sortedTradeDataJson);
+        }
+        else {
+            let sortedTradeDataJson = [...TradeDataJson].sort(
+                (p1, p2) => (p1[sortColumn] < p2[sortColumn]) ? -1 : (p1[sortColumn] > p2[sortColumn]) ? 1 : 0);
+            setTradeData(sortedTradeDataJson);
+        }
+
+    }, [sortColumnAlignment]);
+
+
+    return (
+        <div>
+            {/* pop section: hidden initially */}
+            {isGeneratePDF && <GeneratePDF handleClose={toggleGeneratePDF} tradeData={currentTradeObject} />}
+            {isViewPDF && <ViewPDF handleClose={toggleViewPDF} tradeData={currentTradeObject} />}
+            {isViewTrade && <ViewTrade handleClose={toggleViewTrade} tradeData={currentTradeObject} />}
+            {isMakersCheck && <MakersCheck handleClose={toggleMakersCheck} tradeData={currentTradeObject} />}
+            {isCheckersCheck && <CheckersCheck handleClose={toggleCheckersCheck} tradeData={currentTradeObject} />}
+
+            {/* table section */}
+            <div className='row d-flex justify-content-center py-4 px-2' style={{ margin: '0', padding: '0', overflow: 'hidden', maxWidth: '100%' }}>
+                <h2>Trades List</h2>
+                {/* Search Filter Section */}
+                <div>
+                    <form className="form my-4" >
+                        <span className="form-group m-1">
+                            <label className="me-2 fw-medium" for="id">Filter By</label>
+                            <select
+                                name="search-column"
+                                value={searchColumn}
+                                id="search-column"
+                                type="text"
+                                placeholder="search-column"
+                                onChange={e => onSearchColumnChange(e)}
+                                style={{ padding: '2.5px' }}
+                            >
+                                <option value="id">Trade ID</option>
+                                <option value="party1">Party 1</option>
+                                <option value="party2">Party 2</option>
+                                <option value="counterparty">Counterparty</option>
+                                <option value="ExchangedCurrency1">Currency 1</option>
+                                <option value="ExchangedCurrency2">Currency 2</option>
+                                <option value="Amount">Amount</option>
+                                <option value="Date">Settlement Date</option>
+                                <option value="Status">Status</option>
+                            </select>
+
+                        </span>
+                        <span className="form-group mb-1 mt-1">
+                            <input
+                                name="search-column-data"
+                                value={searchColumnData}
+                                id="search-column-data"
+                                type="text"
+                                placeholder="Search"
+                                onChange={e => onSearchColumnDataChange(e)}
+                            />
+                        </span>
+                    </form>
+                </div>
+                <div className='col-lg-12'>
+                    {renderData(currentItems)}
+                </div>
+
+                {/* pagination */}
+                <div className='col-lg-4 col-md-6'>
+                    <ul className="pageNumbers ">
+                        <li style={{ padding: '0', marginRight: '7px' }}>
+                            <button
+                                onClick={handlePrevbtn}
+                                disabled={currentPage == pages[0] ? true : false}
+                            >
+                                Prev
+                            </button>
                         </li>
-                        <li class="nav-item">
-                            <NavLink className="nav-link active" exact to="/about">About</NavLink>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Others
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><NavLink className="nav-link active" exact to="/profile">Profile</NavLink></li>
-                                <li><NavLink className="nav-link active" exact to="/tradelog">Trade Log</NavLink></li>
-                            </ul>
+                        {pageDecrementBtn}
+                        {renderPageNumbers}
+                        {pageIncrementBtn}
+
+                        <li style={{ padding: '0', marginLeft: '7px' }}>
+                            <button
+                                onClick={handleNextbtn}
+                                disabled={currentPage == pages[pages.length - 1] ? true : false}
+                            >
+                                Next
+                            </button>
                         </li>
                     </ul>
-                    {/* 
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Trade ID" aria-label="Search" />
-                        <button class="btn btn-outline-success" type="submit">
-                            <FontAwesomeIcon icon="fa-solid fa-magnifying-glass" />
-                        </button>
-                    </form>
-                    */}
-                    <button 
-                    type="button" 
-                    class="btn mx-2"
-                    style={{backgroundColor:'#cc0000'}}
-                    >
-                        <Link style={{textDecoration:'none',color:'white'}} exact to="/login">
-                            <span><FontAwesomeIcon icon="fa-solid fa-right-from-bracket" size="sm" /> Logout</span>
-                        </Link>
-                    </button>
-
                 </div>
+
+
             </div>
-        </nav>
-
-    </div>
+        </div>
+    )
 }
 
-export default Navbar;
-
-
-
-*{
-    font-family: 'Poppins', sans-serif;
-}
-/* home page style */
-footer {
-    color: rgb(255, 255, 255);
-}
-
-a {
-    color: white;
-}
-
-.shfooter .collapse {
-    display: inherit;
-}
-
-@media (max-width: 767px) {
-    .shfooter ul {
-        margin-bottom: 0;
-    }
-
-    .shfooter .collapse {
-        display: none;
-    }
-
-    .shfooter .collapse.show {
-        display: block;
-    }
-
-    .shfooter .title .fa-angle-up,
-    .shfooter .title[aria-expanded="true"] .fa-angle-down {
-        display: none;
-    }
-
-    .shfooter .title[aria-expanded="true"] .fa-angle-up {
-        display: block;
-    }
-
-    .shfooter .navbar-toggler {
-        display: inline-block;
-        padding: 0;
-    }
-}
-
-.resize {
-    text-align: center;
-}
-
-.resize {
-    margin-top: 3rem;
-    font-size: 1.25rem;
-}
-
-/*RESIZESCREEN ANIMATION*/
-.fa-angle-double-right {
-    animation: rightanime 1s linear infinite;
-}
-
-.fa-angle-double-left {
-    animation: leftanime 1s linear infinite;
-}
-
-@keyframes rightanime {
-    50% {
-        transform: translateX(10px);
-        opacity: 0.5;
-    }
-
-    100% {
-        transform: translateX(10px);
-        opacity: 0;
-    }
-}
-
-@keyframes leftanime {
-    50% {
-        transform: translateX(-10px);
-        opacity: 0.5;
-    }
-
-    100% {
-        transform: translateX(-10px);
-        opacity: 0;
-    }
-}
-
-/*Login area style*/
-@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
-
-html,
-.login_wrapper {
-    height: 100%;
-}
-
-.login_wrapper {
-    display: grid;
-    place-items: center;
-    background: #dde1e7;
-    background-image: url("loginback2.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    height: 100%;
-    width: 100%;
-    text-align: center;
-}
-.login_content {
-    width: 330px;
-    padding: 30px 25px;
-    background: #f8f9fa;
-    border-radius: 10px;
-    box-shadow: -3px -3px 7px #ffffff73,
-        2px 2px 5px rgba(94, 104, 121, 0.288);
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-    margin: 40px 0;
-}
-
-.login_content .text {
-    font-size: 30px;
-    font-weight: 600;
-    margin-bottom: 15px;
-    color: #595959;
-}
-
-.field {
-    height: 40px;
-    width: 100%;
-    display: flex;
-    position: relative;
-}
-.field:nth-child(2) {
-    margin-top: 15px;
-}
-.field:nth-child(3) {
-    margin-top: 15px;
-}
-
-.field input {
-    height: 100%;
-    width: 100%;
-    padding-left: 45px;
-    outline: none;
-    border: none;
-    font-size: 16px;
-    background: #dde1e7;
-    color: #595959;
-    border-radius: 25px;
-    box-shadow: inset 2px 2px 5px #BABECC,
-        inset -5px -5px 10px #ffffff73;
-}
-.field input:hover {
-    background: #ced0d2;
-}
-.field input:focus {
-    box-shadow: inset 1px 1px 2px #BABECC,
-        inset -1px -1px 2px #ffffff73;
-}
-
-.field select {
-    height: 100%;
-    width: 100%;
-    padding-left: 45px;
-    outline: none;
-    border: none;
-    font-size: 16px;
-    background: #dde1e7;
-    color: #595959;
-    border-radius: 25px;
-    box-shadow: inset 2px 2px 5px #BABECC,
-        inset -5px -5px 10px #ffffff73;
-}
-.field select:hover {
-    background: #ced0d2;
-}
-.field select:focus {
-    background: #dde1e7;
-    color: #595959;
-    box-shadow: inset 1px 1px 2px #BABECC,
-        inset -1px -1px 2px #ffffff73;
-}
-
-.field span {
-    position: absolute;
-    color: #595959;
-    width: 50px;
-    line-height: 40px;
-}
-
-.field label {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 45px;
-    pointer-events: none;
-    color: #666666;
-}
-
-.field input:valid~label {
-    opacity: 0;
-}
-
-.forgot-pass {
-    text-align: left;
-    margin: 6px 0 10px 5px;
-}
-
-.forgot-pass a {
-    font-size: 16px;
-    color: #3498db;
-    text-decoration: none;
-}
-
-.forgot-pass:hover a {
-    text-decoration: underline;
-}
-
-.signin_button {
-    margin: 2px 0;
-    width: 100%;
-    height: 45px;
-    font-size: 18px;
-    line-height: 45px;
-    font-weight: 600;
-    background: #35d300;
-    border-radius: 25px;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    color: #595959;
-    box-shadow: 2px 2px 5px #BABECC,
-        -5px -5px 10px #ffffff73;
-}
-
-.signin_button:focus {
-    color: #3498db;
-    box-shadow: inset 2px 2px 5px #BABECC,
-        inset -5px -5px 10px #ffffff73;
-}
-
-.sign-up {
-    margin: 10px 0;
-    color: #595959;
-    font-size: 16px;
-}
-
-.sign-up a {
-    color: #3498db;
-    text-decoration: none;
-}
-
-.sign-up a:hover {
-    text-decoration: underline;
-}
-
-
-
-.navbar-gradient {
-    background: linear-gradient(to right, rgb(173, 216, 230), rgb(70, 130, 180)); /* Light blue to darker blue */
-}
-
-
-        <i class="bi bi-arrow-return-left"></i>
+export default TradeTable
