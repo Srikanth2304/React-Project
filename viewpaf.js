@@ -57,3 +57,7 @@ export default ViewPDF
 
 
   background: linear-gradient(135deg, #1e90ff, #3cb371);
+
+npm install @mui/material @emotion/react @emotion/styled
+npm install @mui/icons-material
+
