@@ -54,3 +54,6 @@ function ViewPDF(props) {
 }
 
 export default ViewPDF
+
+
+  background: linear-gradient(135deg, #1e90ff, #3cb371);
