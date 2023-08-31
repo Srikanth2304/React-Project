@@ -1,1 +1,71 @@
-<p className="profile-rating mt-3 mb-1" style={{color:"rgb(13,110,253)", fontWeight:"bold"}}>Bank ID: <span style={{color:"rgb(33,37,41)", fontFamily:"400"}}>2013306</span></p>
+import React from 'react'
+import './style/PopUpBox.css';
+import './style/left-aligned-table.css'
+import './style/card.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+
+//aligning heading to left
+
+const headingstyle = {
+  textAlign: 'left'
+}
+
+function ViewTrade(props) {
+  return (
+    <div className="popup-box">
+      <div className="box">
+        <span className="close-icon" onClick={props.handleClose}>x</span>
+        <div style={{ width: '70%', margin: 'auto' }} >
+          <h3 className='mb-3'>Trade Information For Trade ID {props.tradeData.id}</h3> 
+          <div className='card'>
+            {/* <strong>Trade Details</strong>  */}
+            <table className='table table-striped table-hover left-aligned-table '>
+              <thead>
+                <th className='pb-2' colSpan={2}>Trade Details</th>
+              </thead>
+              <tbody>
+                <tr style={{background: "linear-gradient(to right , #ADD8E6,#90EE90)"}}><td><strong>Trade ID</strong> </td><td>{props.tradeData.id}</td></tr>
+                <tr><td><strong>Status</strong></td><td>{props.tradeData.Status} </td></tr>
+                <tr><td><strong>Makers Action</strong></td><td>{props.tradeData.MakersAction} </td></tr>
+                <tr><td><strong>Checkers Action</strong></td><td>{props.tradeData.CheckersAction} </td></tr>
+                <tr><td><strong>Product Title</strong></td><td>{props.tradeData.product} </td></tr>
+                <tr><td><strong>Counterparty</strong></td><td>{props.tradeData.counterparty}</td></tr>
+                <tr><td><strong>Currency1</strong></td><td>{props.tradeData.ExchangedCurrency1}</td></tr>
+                <tr><td><strong>Currency2</strong></td><td>{props.tradeData.ExchangedCurrency2}</td></tr>
+                <tr><td><strong>Amount</strong></td><td>{props.tradeData.Amount}</td></tr>
+                <tr><td><strong>Date</strong></td><td>{props.tradeData.Date}</td></tr>
+              </tbody>
+            </table>
+          </div>
+          {/*Outbound Card*/}
+          <div className='card' style={{ backgroundColor: "#f2f2f2" }}>
+            <h10 style={headingstyle}><strong>Outbound Comments</strong></h10>
+            <h10 style={headingstyle}>Trade is completed successfuly</h10>
+          </div>
+          {/*Inbound Card */}
+          <div className='card' style={{ backgroundColor: "#f2f2f2" }}>
+            <h10 style={headingstyle}><strong>Inbound Comments</strong></h10>
+            <h10 style={headingstyle}>Trade is completed successfuly</h10>
+          </div>
+          <div className='card' style={{ backgroundColor: "#f2f2f2" }}>
+            <h10 style={headingstyle}><strong>PSID</strong></h10>
+            <h10 style={headingstyle}>123783,939203</h10>
+          </div>
+          <div className='card' style={{ backgroundColor: "#f8f9fa" }}>
+            <h10 style={headingstyle}><strong>Event Closure Stats</strong></h10>
+            <h10 style={headingstyle}>2023-07-23 18:45 </h10>
+          </div>
+          <div className='card' style={{ backgroundColor: "#f8f9fa" }}>
+            <h10 style={headingstyle}><strong>Outbound pdf</strong></h10>
+            <div style={{ height: '350px', width: '100%', overflow: 'hidden', position: 'relative' }}>
+              <object data='https://www.africau.edu/images/default/sample.pdf' style={{ height: '365px', width: '104%' }} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default ViewTrade
