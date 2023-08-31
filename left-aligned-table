@@ -1,0 +1,8 @@
+.left-aligned-table{
+    width: 100%;
+    border-collapse:collapse;
+}
+.left-aligned-table td{
+ padding: 8px;
+ text-align: left;
+}
